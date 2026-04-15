@@ -1,6 +1,9 @@
-import { findRoute } from "@/router/define"
-import { JSX, useState } from "react"
-import { type RoutePath } from "./types"
+import { useState } from "react"
+import { routes } from "./routes"
+import type { RoutePath } from "./types"
+
+const findRoute = (path: RoutePath) =>
+	routes.find((route) => route.path === path)
 
 export const AppRouter = () => {
 	const [currentRoute, setCurrentRoute] = useState<RoutePath>("home")
@@ -11,11 +14,6 @@ export const AppRouter = () => {
 	}
 	return <Component navigate={navigate} />
 }
-
-type RouteProps = {
-	navigate: (path: RoutePath) => void
-}
-export type RouteComponent = (props: RouteProps) => JSX.Element
 
 export const ErrorComponent = () => {
 	return <div>Error</div>
