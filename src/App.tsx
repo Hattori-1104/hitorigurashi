@@ -1,3 +1,5 @@
+import { AppRouter } from "./router/component"
+
 export default () => {
-	return <div>Hello</div>
+	return <AppRouter />
 }
