@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRouter } from "@/hooks/useRouter"
 import { routes } from "./routes"
 import type { RoutePath } from "./types"
 
@@ -6,13 +6,9 @@ const findRoute = (path: RoutePath) =>
 	routes.find((route) => route.path === path)
 
 export const AppRouter = () => {
-	const [currentRoute, setCurrentRoute] = useState<RoutePath>("home")
-	console.log(currentRoute)
+	const { currentRoute } = useRouter()
 	const Component = findRoute(currentRoute)?.component ?? ErrorComponent
-	const navigate = (path: RoutePath) => {
-		setCurrentRoute(path)
-	}
-	return <Component navigate={navigate} />
+	return <Component />
 }
 
 export const ErrorComponent = () => {

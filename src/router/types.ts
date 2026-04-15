@@ -7,6 +7,4 @@ export type Route<path extends string> = {
 }
 export type RoutePath = (typeof routes)[number]["path"]
 export type RouteComponent = (props: RouteProps) => JSX.Element
-export type RouteProps = {
-	navigate: (path: RoutePath) => void
-}
+export type RouteProps = {}
