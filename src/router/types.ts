@@ -6,5 +6,4 @@ export type Route<path extends string> = {
 	component: RouteComponent
 }
 export type RoutePath = (typeof routes)[number]["path"]
-export type RouteComponent = (props: RouteProps) => JSX.Element
-export type RouteProps = {}
+export type RouteComponent = () => JSX.Element

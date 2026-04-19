@@ -1,13 +1,14 @@
 import { useRouter } from "@/hooks/useRouter"
 import { routes } from "./routes"
-import type { RoutePath } from "./types"
+import type { Route, RoutePath } from "./types"
 
-const findRoute = (path: RoutePath) =>
-	routes.find((route) => route.path === path)
+const findRoute = <Path extends RoutePath>(path: Path) =>
+	routes.find((route) => route.path === path) as Route<Path>
 
 export const AppRouter = () => {
 	const { currentRoute } = useRouter()
-	const Component = findRoute(currentRoute)?.component ?? ErrorComponent
+	console.log(currentRoute)
+	const Component = findRoute(currentRoute).component
 	return <Component />
 }
 
