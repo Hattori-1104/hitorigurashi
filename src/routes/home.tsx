@@ -1,3 +1,4 @@
+import { useState } from "react"
 import {
 	Layout,
 	LayoutBody,
@@ -6,8 +7,7 @@ import {
 } from "@/components/layout"
 import { useRouter } from "@/hooks/useRouter"
 import { createRoute } from "@/router"
-import { commands, ShoppingItem } from "@/types/bindings"
-import { useState } from "react"
+import { commands, type ShoppingItem } from "@/types/bindings"
 
 export const HomeRoute = createRoute("home", () => {
 	const { navigate, currentRoute } = useRouter()

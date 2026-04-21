@@ -9,9 +9,8 @@
 		"editor.defaultFormatter": "biomejs.biome",
 		"editor.tabSize": 2,
 		"editor.codeActionsOnSave": {
-			"source.fixAll.ts": "explicit",
-			"source.organizeImports": "explicit",
-			"source.sortImports": "explicit"
+			"source.fixAll.biome": "explicit",
+			"source.organizeImports.biome": "explicit",
 		}
 	},
 	"[rust]": {

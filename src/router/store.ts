@@ -1,6 +1,6 @@
-import { Result } from "@/utils/result"
 import { create } from "zustand"
-import { RoutePath } from "./types"
+import type { Result } from "@/utils/result"
+import type { RoutePath } from "./types"
 
 type State = {
 	historyStack: RoutePath[]
