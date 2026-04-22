@@ -6,10 +6,8 @@ import {
 } from "@/components/layout"
 import { createRoute } from "@/router/create_route"
 
-export const AboutRoute = createRoute(
-	"about",
-	() => {},
-	() => {
+export const AboutRoute = createRoute("about", {
+	Component: () => {
 		return (
 			<Layout>
 				<LayoutHeader>About</LayoutHeader>
@@ -22,4 +20,4 @@ export const AboutRoute = createRoute(
 			</Layout>
 		)
 	},
-)
+})

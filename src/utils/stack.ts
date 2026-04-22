@@ -1,4 +1,4 @@
-import { Effect } from "effect"
+import { Either } from "effect"
 
 export class Stack<T> {
 	private items: T[]
@@ -11,10 +11,10 @@ export class Stack<T> {
 		this.items.push(item)
 	}
 
-	pop(): Effect.Effect<null, "empty_stack"> {
-		if (!this.canPop) return Effect.fail("empty_stack")
+	pop(): Either.Either<null, "empty_stack"> {
+		if (!this.canPop) return Either.left("empty_stack")
 		this.items.pop()
-		return Effect.succeed(null)
+		return Either.right(null)
 	}
 
 	replace(item: T): void {

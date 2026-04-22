@@ -8,13 +8,11 @@ import {
 import { createRoute } from "@/router/create_route"
 import { commands, type ShoppingItem } from "@/types/bindings"
 
-export const HomeRoute = createRoute(
-	"home",
-	async () => {
-		const promise: Promise<string> = new Promise((resolve) => resolve("Hi"))
-		return await promise
+export const HomeRoute = createRoute("home", {
+	loader: (): Promise<string> => {
+		return new Promise((resolve) => setTimeout(() => resolve("Hello"), 2000))
 	},
-	({ loaderData }) => {
+	Component: ({ loaderData }) => {
 		const [itemName, setItemName] = useState<ShoppingItem["name"]>("")
 		const [items, setItems] = useState<ShoppingItem[]>([])
 
@@ -52,4 +50,4 @@ export const HomeRoute = createRoute(
 			</Layout>
 		)
 	},
-)
+})

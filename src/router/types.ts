@@ -4,7 +4,7 @@ import type { routes } from "../routes/routes"
 export type Route<Path extends string, LoaderData> = {
 	path: Path
 	Component: RouteComponent<LoaderData>
-	loader: () => Promise<LoaderData> | LoaderData
+	loader?: () => Promise<LoaderData> | LoaderData
 }
 export type RouteUnion = (typeof routes)[number]
 export type RoutePath = RouteUnion["path"]

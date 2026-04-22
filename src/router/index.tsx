@@ -9,14 +9,15 @@ type CurrentRouteInfo<Path extends RoutePath> = {
 }
 
 type RouterState = {
-	currentRouteInfo: CurrentRouteInfo<RoutePath> | null
 	state:
 		| {
 				type: "idle"
+				currentRouteInfo: CurrentRouteInfo<RoutePath>
 		  }
 		| {
 				type: "loading"
 				loading: boolean
+				currentRouteInfo?: CurrentRouteInfo<RoutePath>
 				nextRoutePath: RoutePath
 		  }
 }
@@ -25,7 +26,6 @@ type RouterState = {
 const historyStack = new Stack<RoutePath>("home")
 
 const useRouterStore = create<RouterState>(() => ({
-	currentRouteInfo: null,
 	state: {
 		type: "loading",
 		loading: false,
@@ -40,30 +40,53 @@ const getRouteFromPath = <Path extends RoutePath>(path: Path) =>
 	>
 
 export const AppRouter = () => {
-	const currentRouteInfo = useRouterStore((state) => state.currentRouteInfo)
-	const state = useRouterStore((state) => state.state)
-	if (!currentRouteInfo) {
-		if (state.type === "loading" && !state.loading) {
-			state.loading = true
-			const nextRoute = getRouteFromPath(state.nextRoutePath)
-			const loader = async () => await nextRoute.loader()
-			loader().then((loaderData) => {
-				useRouterStore.setState(() => ({
-					currentRouteInfo: {
-						path: state.nextRoutePath,
-						loaderData,
-					},
-					state: {
-						type: "idle",
-					},
-				}))
-			})
+	const state = useRouterStore((s) => s.state)
+	if (state.type === "idle") {
+		const { Component } = getRouteFromPath(state.currentRouteInfo.path)
+		return <Component loaderData={state.currentRouteInfo.loaderData} />
+	}
+
+	if (state.type === "loading") {
+		if (state.currentRouteInfo) {
+			const { Component } = getRouteFromPath(state.currentRouteInfo.path)
+			return <Component loaderData={state.currentRouteInfo.loaderData} />
 		}
+		if (!state.loading) loadRoute(state.nextRoutePath)
+
 		return <FallBack />
 	}
-	const { Component } = getRouteFromPath(currentRouteInfo.path)
-	const loaderData = currentRouteInfo.loaderData
-	return <Component loaderData={loaderData} />
+}
+
+const loadRoute = async (nextRoutePath: RoutePath) => {
+	const { loader } = getRouteFromPath(nextRoutePath)
+
+	if (!loader) {
+		useRouterStore.setState(() => ({
+			state: {
+				type: "idle",
+				currentRouteInfo: {
+					path: nextRoutePath,
+					loaderData: undefined,
+				},
+			},
+		}))
+		historyStack.push(nextRoutePath)
+		return
+	}
+	useRouterStore.setState(() => ({
+		state: { type: "loading", nextRoutePath, loading: true },
+	}))
+	const loaderData = await loader()
+	historyStack.push(nextRoutePath)
+	useRouterStore.setState(() => ({
+		state: {
+			type: "idle",
+			currentRouteInfo: {
+				path: nextRoutePath,
+				loaderData,
+			},
+		},
+	}))
 }
 
 const FallBack = () => {
