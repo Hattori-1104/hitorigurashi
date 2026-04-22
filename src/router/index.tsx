@@ -23,9 +23,9 @@ type RouterState = {
 }
 
 // シングルトン
-const historyStack = new Stack<RoutePath>("home")
+export const historyStack = new Stack<RoutePath>("home")
 
-const useRouterStore = create<RouterState>(() => ({
+export const useRouterStore = create<RouterState>(() => ({
 	state: {
 		type: "loading",
 		loading: false,
@@ -33,7 +33,7 @@ const useRouterStore = create<RouterState>(() => ({
 	},
 }))
 
-const getRouteFromPath = <Path extends RoutePath>(path: Path) =>
+export const getRouteFromPath = <Path extends RoutePath>(path: Path) =>
 	routes.find((route) => route.path === path) as unknown as Route<
 		Path,
 		LoaderDataFromPath<Path>
@@ -41,17 +41,19 @@ const getRouteFromPath = <Path extends RoutePath>(path: Path) =>
 
 export const AppRouter = () => {
 	const state = useRouterStore((s) => s.state)
+	console.log("Router Rendering")
+	console.log(`current : ${state.currentRouteInfo?.path}`)
 	if (state.type === "idle") {
 		const { Component } = getRouteFromPath(state.currentRouteInfo.path)
 		return <Component loaderData={state.currentRouteInfo.loaderData} />
 	}
 
 	if (state.type === "loading") {
+		if (!state.loading) loadRoute(state.nextRoutePath)
 		if (state.currentRouteInfo) {
 			const { Component } = getRouteFromPath(state.currentRouteInfo.path)
 			return <Component loaderData={state.currentRouteInfo.loaderData} />
 		}
-		if (!state.loading) loadRoute(state.nextRoutePath)
 
 		return <FallBack />
 	}
@@ -60,8 +62,9 @@ export const AppRouter = () => {
 const loadRoute = async (nextRoutePath: RoutePath) => {
 	const { loader } = getRouteFromPath(nextRoutePath)
 
+	// 即座に遷移
 	if (!loader) {
-		useRouterStore.setState(() => ({
+		useRouterStore.setState({
 			state: {
 				type: "idle",
 				currentRouteInfo: {
@@ -69,14 +72,23 @@ const loadRoute = async (nextRoutePath: RoutePath) => {
 					loaderData: undefined,
 				},
 			},
-		}))
+		})
 		historyStack.push(nextRoutePath)
 		return
 	}
-	useRouterStore.setState(() => ({
-		state: { type: "loading", nextRoutePath, loading: true },
+
+	// Loaderを待機して遷移
+	useRouterStore.setState((s) => ({
+		state: {
+			currentRouteInfo: s.state.currentRouteInfo,
+			type: "loading",
+			nextRoutePath,
+			loading: true,
+		},
 	}))
+
 	const loaderData = await loader()
+
 	historyStack.push(nextRoutePath)
 	useRouterStore.setState(() => ({
 		state: {
