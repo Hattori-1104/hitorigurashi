@@ -6,6 +6,7 @@ import {
 	LayoutNavbar,
 } from "@/components/layout"
 import { useNavigation } from "@/hooks/useNavigation"
+import { historyStack } from "@/router"
 import { createRoute } from "@/router/create_route"
 import { commands, type ShoppingItem } from "@/types/bindings"
 
@@ -32,6 +33,13 @@ export const HomeRoute = createRoute("home", {
 				<LayoutHeader>Home</LayoutHeader>
 				<LayoutBody>
 					<div>loaderData : {loaderData}</div>
+					<ul>
+						{Array.from(historyStack, (h) => (
+							<li key={h.hash}>
+								{h.hash} {h.value}
+							</li>
+						))}
+					</ul>
 					<input
 						type="button"
 						value="To About"

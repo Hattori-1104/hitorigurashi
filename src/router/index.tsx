@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { create } from "zustand"
 import { routes } from "@/routes/routes"
 import { Stack } from "@/utils/stack"
@@ -25,7 +26,7 @@ type RouterState = {
 // シングルトン
 export const historyStack = new Stack<RoutePath>("home")
 
-export const useRouterStore = create<RouterState>(() => ({
+export const routerStore = create<RouterState>(() => ({
 	state: {
 		type: "loading",
 		loading: false,
@@ -40,31 +41,35 @@ export const getRouteFromPath = <Path extends RoutePath>(path: Path) =>
 	>
 
 export const AppRouter = () => {
-	const state = useRouterStore((s) => s.state)
-	console.log("Router Rendering")
-	console.log(`current : ${state.currentRouteInfo?.path}`)
-	if (state.type === "idle") {
-		const { Component } = getRouteFromPath(state.currentRouteInfo.path)
-		return <Component loaderData={state.currentRouteInfo.loaderData} />
-	}
+	const nextPath = routerStore((s) =>
+		s.state.type === "loading" ? s.state.nextRoutePath : null,
+	)
+	const isLoading = routerStore((s) =>
+		s.state.type === "loading" ? s.state.loading : null,
+	)
 
-	if (state.type === "loading") {
-		if (!state.loading) loadRoute(state.nextRoutePath)
-		if (state.currentRouteInfo) {
-			const { Component } = getRouteFromPath(state.currentRouteInfo.path)
-			return <Component loaderData={state.currentRouteInfo.loaderData} />
+	useEffect(() => {
+		if (nextPath && !isLoading) {
+			loadRoute(nextPath)
 		}
+	}, [nextPath, isLoading])
 
-		return <FallBack />
+	const currentInfo = routerStore((s) => s.state.currentRouteInfo)
+
+	if (currentInfo) {
+		const currentRoute = getRouteFromPath(currentInfo.path)
+		return <currentRoute.Component loaderData={currentInfo.loaderData} />
 	}
+	return <FallBack />
 }
 
+// "非同期"にrouterStoreを変更
 const loadRoute = async (nextRoutePath: RoutePath) => {
 	const { loader } = getRouteFromPath(nextRoutePath)
 
 	// 即座に遷移
 	if (!loader) {
-		useRouterStore.setState({
+		routerStore.setState({
 			state: {
 				type: "idle",
 				currentRouteInfo: {
@@ -78,7 +83,7 @@ const loadRoute = async (nextRoutePath: RoutePath) => {
 	}
 
 	// Loaderを待機して遷移
-	useRouterStore.setState((s) => ({
+	routerStore.setState((s) => ({
 		state: {
 			currentRouteInfo: s.state.currentRouteInfo,
 			type: "loading",
@@ -90,7 +95,7 @@ const loadRoute = async (nextRoutePath: RoutePath) => {
 	const loaderData = await loader()
 
 	historyStack.push(nextRoutePath)
-	useRouterStore.setState(() => ({
+	routerStore.setState(() => ({
 		state: {
 			type: "idle",
 			currentRouteInfo: {
