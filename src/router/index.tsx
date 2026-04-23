@@ -1,44 +1,7 @@
 import { useEffect } from "react"
-import { create } from "zustand"
-import { routes } from "@/routes/routes"
-import { Stack } from "@/utils/stack"
-import type { LoaderDataFromPath, Route, RoutePath } from "./types"
-
-type CurrentRouteInfo<Path extends RoutePath> = {
-	path: Path
-	loaderData: LoaderDataFromPath<Path>
-}
-
-type RouterState = {
-	state:
-		| {
-				type: "idle"
-				currentRouteInfo: CurrentRouteInfo<RoutePath>
-		  }
-		| {
-				type: "loading"
-				loading: boolean
-				currentRouteInfo?: CurrentRouteInfo<RoutePath>
-				nextRoutePath: RoutePath
-		  }
-}
-
-// シングルトン
-export const historyStack = new Stack<RoutePath>("home")
-
-export const routerStore = create<RouterState>(() => ({
-	state: {
-		type: "loading",
-		loading: false,
-		nextRoutePath: "home",
-	},
-}))
-
-export const getRouteFromPath = <Path extends RoutePath>(path: Path) =>
-	routes.find((route) => route.path === path) as unknown as Route<
-		Path,
-		LoaderDataFromPath<Path>
-	>
+import { historyStack, routerStore } from "./store"
+import type { RoutePath } from "./types"
+import { getRouteFromPath } from "./utils"
 
 export const AppRouter = () => {
 	const nextPath = routerStore((s) =>

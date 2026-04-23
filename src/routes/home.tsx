@@ -6,17 +6,19 @@ import {
 	LayoutNavbar,
 } from "@/components/layout"
 import { useNavigation } from "@/hooks/useNavigation"
-import { historyStack } from "@/router"
 import { createRoute } from "@/router/create_route"
 import { commands, type ShoppingItem } from "@/types/bindings"
 
 export const HomeRoute = createRoute("home", {
-	loader: (): Promise<string> => {
-		return new Promise((resolve) => setTimeout(() => resolve("Hello"), 1000))
+	loader: async () => {
+		const res = await commands.getItems()
+		if (res.status === "ok") return { items: res.data }
+		else throw Error("commandが動かない")
+		// return { items: [{ id: 0, name: "error", quantity: 1 }] }
 	},
 	Component: ({ loaderData }) => {
 		const [itemName, setItemName] = useState<ShoppingItem["name"]>("")
-		const [items, setItems] = useState<ShoppingItem[]>([])
+		const [items, setItems] = useState<ShoppingItem[]>(loaderData.items)
 		const { navigate } = useNavigation()
 
 		const handleAddItem = async () => {
@@ -32,14 +34,6 @@ export const HomeRoute = createRoute("home", {
 			<Layout>
 				<LayoutHeader>Home</LayoutHeader>
 				<LayoutBody>
-					<div>loaderData : {loaderData}</div>
-					<ul>
-						{Array.from(historyStack, (h) => (
-							<li key={h.hash}>
-								{h.hash} {h.value}
-							</li>
-						))}
-					</ul>
 					<input
 						type="button"
 						value="To About"
@@ -54,7 +48,7 @@ export const HomeRoute = createRoute("home", {
 					<ul>
 						{items.map((item) => (
 							<li key={item.id}>
-								{item.name} x {item.quantity}
+								{item.name} x{item.quantity}
 							</li>
 						))}
 					</ul>

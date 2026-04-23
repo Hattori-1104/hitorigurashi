@@ -1,4 +1,4 @@
-import { routerStore } from "@/router"
+import { routerStore } from "@/router/store"
 import type { RoutePath } from "@/router/types"
 
 export const useNavigation = () => {

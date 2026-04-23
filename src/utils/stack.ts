@@ -16,8 +16,10 @@ export class Stack<T> implements Iterable<IteratorResult<T>> {
 	}
 
 	push(item: T): void {
-		this.items.push(item)
-		this.hashList.push(hash())
+		if (item !== this.head) {
+			this.items.push(item)
+			this.hashList.push(hash())
+		}
 	}
 
 	pop(): Either.Either<null, "empty_stack"> {
@@ -39,11 +41,12 @@ export class Stack<T> implements Iterable<IteratorResult<T>> {
 		return {
 			next() {
 				if (i >= items.length) return { value: undefined, done: true }
+				const currentIndex = i
 				i++
 				return {
 					value: {
-						value: items[i],
-						hash: hashList[i],
+						value: items[currentIndex],
+						hash: hashList[currentIndex],
 					},
 					done: false,
 				}
