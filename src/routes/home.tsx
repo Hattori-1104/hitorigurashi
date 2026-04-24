@@ -14,7 +14,6 @@ export const HomeRoute = createRoute("home", {
 		const res = await commands.getItems()
 		if (res.status === "ok") return { items: res.data }
 		else throw Error("commandが動かない")
-		// return { items: [{ id: 0, name: "error", quantity: 1 }] }
 	},
 	Component: ({ loaderData }) => {
 		const [itemName, setItemName] = useState<ShoppingItem["name"]>("")
