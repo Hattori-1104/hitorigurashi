@@ -1,23 +1,30 @@
 import { useEffect } from "react"
-import { historyStack, routerStore } from "./store"
+import { historyStack, useRouterStore } from "./store"
 import type { RoutePath } from "./types"
 import { getRouteFromPath } from "./utils"
 
+const usePageLoader = () =>
+	useRouterStore((s) => {
+		if (s.state.type === "loading") {
+			if (!s.state.loading) {
+				return {
+					shouldStartReloading: true as const,
+					nextRoutePath: s.state.nextRoutePath,
+				}
+			}
+		}
+		return { shouldStartReloading: false as const }
+	})
+
 export const AppRouter = () => {
-	const nextPath = routerStore((s) =>
-		s.state.type === "loading" ? s.state.nextRoutePath : null,
-	)
-	const isLoading = routerStore((s) =>
-		s.state.type === "loading" ? s.state.loading : null,
-	)
+	const pageLoaderState = usePageLoader()
 
 	useEffect(() => {
-		if (nextPath && !isLoading) {
-			loadRoute(nextPath)
-		}
-	}, [nextPath, isLoading])
+		if (pageLoaderState.shouldStartReloading)
+			loadRoute(pageLoaderState.nextRoutePath)
+	}, [pageLoaderState])
 
-	const currentInfo = routerStore((s) => s.state.currentRouteInfo)
+	const currentInfo = useRouterStore((s) => s.state.currentRouteInfo)
 
 	if (currentInfo) {
 		const currentRoute = getRouteFromPath(currentInfo.path)
@@ -27,12 +34,14 @@ export const AppRouter = () => {
 }
 
 // "非同期"にrouterStoreを変更
+// ここから
+
 const loadRoute = async (nextRoutePath: RoutePath) => {
 	const { loader } = getRouteFromPath(nextRoutePath)
 
 	// 即座に遷移
 	if (!loader) {
-		routerStore.setState({
+		useRouterStore.setState({
 			state: {
 				type: "idle",
 				currentRouteInfo: {
@@ -46,7 +55,7 @@ const loadRoute = async (nextRoutePath: RoutePath) => {
 	}
 
 	// Loaderを待機して遷移
-	routerStore.setState((s) => ({
+	useRouterStore.setState((s) => ({
 		state: {
 			currentRouteInfo: s.state.currentRouteInfo,
 			type: "loading",
@@ -58,7 +67,7 @@ const loadRoute = async (nextRoutePath: RoutePath) => {
 	const loaderData = await loader()
 
 	historyStack.push(nextRoutePath)
-	routerStore.setState(() => ({
+	useRouterStore.setState(() => ({
 		state: {
 			type: "idle",
 			currentRouteInfo: {

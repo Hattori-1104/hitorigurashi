@@ -6,7 +6,7 @@ import {
 	LayoutNavbar,
 } from "@/components/layout"
 import { useNavigation } from "@/hooks/useNavigation"
-import { createRoute } from "@/router/create_route"
+import { createRoute } from "@/router/create"
 import { commands, type ShoppingItem } from "@/types/bindings"
 
 export const HomeRoute = createRoute("home", {

@@ -2,6 +2,8 @@ import { create } from "zustand"
 import { Stack } from "@/utils/stack"
 import type { LoaderDataFromPath, RoutePath } from "./types"
 
+// ストアのみ定義。アクションは使用側に委ねる。
+
 type CurrentRouteInfo<Path extends RoutePath> = {
 	path: Path
 	loaderData: LoaderDataFromPath<Path>
@@ -23,7 +25,7 @@ export type RouterState = {
 
 // シングルトン
 export const historyStack = new Stack<RoutePath>("home")
-export const routerStore = create<RouterState>(() => ({
+export const useRouterStore = create<RouterState>(() => ({
 	state: {
 		type: "loading",
 		loading: false,

@@ -6,7 +6,7 @@ import {
 } from "@/components/layout"
 import { useIsLoading } from "@/hooks/useLoading"
 import { useNavigation } from "@/hooks/useNavigation"
-import { createRoute } from "@/router/create_route"
+import { createRoute } from "@/router/create"
 
 export const AboutRoute = createRoute("about", {
 	Component: () => {
