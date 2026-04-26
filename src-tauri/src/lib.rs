@@ -1,4 +1,3 @@
-#[cfg(debug_assertions)]
 use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
 use specta::Type;
