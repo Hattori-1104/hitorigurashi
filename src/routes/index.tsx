@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { AppWindow } from "lucide-react"
 import { effectCommand } from "@/commands/effect_command"
 import { Header } from "@/components/Header"
-import { Layout, LayoutBody, LayoutNavbar } from "@/components/Layout"
+import { Layout, LayoutBody } from "@/components/Layout"
+import { Navbar } from "@/features/NavbarConfigured"
 import { effectLoader } from "@/route_modules/loader"
 import { commands } from "@/types/bindings"
 
@@ -14,7 +16,7 @@ export const Route = createFileRoute("/")({
 		const items = Route.useLoaderData()
 		return (
 			<Layout>
-				<Header title="index" back />
+				<Header title="ホーム" />
 				<LayoutBody>
 					<div>
 						<ul>
@@ -26,7 +28,7 @@ export const Route = createFileRoute("/")({
 						</ul>
 					</div>
 				</LayoutBody>
-				<LayoutNavbar>navbar</LayoutNavbar>
+				<Navbar />
 			</Layout>
 		)
 	},

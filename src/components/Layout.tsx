@@ -14,15 +14,6 @@ const styles = stylex.create({
 		overflowY: "scroll",
 		backgroundColor: lightTheme.bg,
 	},
-	navbarWrapper: {
-		height: "calc(4rem + env(safe-area-inset-bottom))",
-		borderTopWidth: "1px",
-		borderTopStyle: "solid",
-		borderTopColor: lightTheme.divider,
-		backgroundColor: lightTheme.bgBright,
-		paddingBottom: "env(safe-area-inset-bottom)",
-		flexShrink: "0",
-	},
 })
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -31,8 +22,4 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 
 export const LayoutBody = ({ children }: { children: React.ReactNode }) => {
 	return <main {...stylex.props(styles.body)}>{children}</main>
-}
-
-export const LayoutNavbar = ({ children }: { children: React.ReactNode }) => {
-	return <nav {...stylex.props(styles.navbarWrapper)}>{children}</nav>
 }

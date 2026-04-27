@@ -6,7 +6,7 @@ export const lightTheme = defineVars({
 	bgBright: "white",
 	divider: slate[300],
 	main: slate[800],
-	sub: slate[500],
+	sub: slate[400],
 	placeholder: slate[400],
 	primary: blue[500],
 	primarySub: blue[200],
