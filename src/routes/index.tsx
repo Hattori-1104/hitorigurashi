@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { AppWindow } from "lucide-react"
 import { effectCommand } from "@/commands/effect_command"
 import { Header } from "@/components/Header"
 import { Layout, LayoutBody } from "@/components/Layout"

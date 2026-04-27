@@ -24,6 +24,7 @@ const s = stylex.create({
 	title: {
 		textAlign: "center",
 		flexGrow: "1",
+		fontWeight: "600",
 	},
 	backButton: {
 		width: "100%",
