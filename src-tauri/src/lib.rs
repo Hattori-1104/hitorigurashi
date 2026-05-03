@@ -1,3 +1,5 @@
+mod commands;
+
 use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
 use specta::Type;
@@ -15,13 +17,6 @@ pub struct ShoppingItem {
 
 pub struct DBState {
 	pub conn: Mutex<Connection>,
-}
-
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-#[tauri::command]
-#[specta::specta]
-fn greet(name: &str) -> String {
-	format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
 #[tauri::command]
@@ -53,7 +48,7 @@ fn get_items(state: tauri::State<DBState>) -> Result<Vec<ShoppingItem>, String> 
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-	let specta_builder = Builder::<tauri::Wry>::new().commands(collect_commands![greet, add_item, get_items]);
+	let specta_builder = Builder::<tauri::Wry>::new().commands(collect_commands![commands::greet, add_item, get_items]);
 
 	#[cfg(debug_assertions)]
 	specta_builder.export(Typescript::default(), "../src/types/bindings.ts").expect("Failed to export TypeScript bindings");

@@ -6,7 +6,10 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"ignoreUnknown": false
+		"includes": [
+			"**",
+			"!src-tauri"
+		]
 	},
 	"formatter": {
 		"enabled": true,
